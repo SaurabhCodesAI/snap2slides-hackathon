@@ -1,4 +1,4 @@
-# 🚀 Snap2Slides - AI-Powered Presentation Generator
+# Snap2Slides - AI-Powered Presentation Generator
 
 Transform your screenshots, handwritten notes, and images into stunning professional presentations with AI magic. Built with Next.js 14, TypeScript, and Google Gemini Vision API.
 ## ✨ Features
