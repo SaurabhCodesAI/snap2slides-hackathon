@@ -54,14 +54,14 @@ export async function analyzeImageWithGeminiPro(
   userPrompt?: string
 ): Promise<GeminiAnalysisResult> {
   return retryWithBackoff(async () => {
-    // Use the most powerful AI model available - we want the best quality analysis
+    // Use gemini-1.5-flash for lower quota usage - still excellent quality
     const model = genAI.getGenerativeModel({ 
-      model: 'gemini-1.5-pro-latest',
+      model: 'gemini-1.5-flash',
       generationConfig: {
         temperature: 0.3, // Keep responses focused and consistent
         topK: 40,
         topP: 0.95,
-        maxOutputTokens: 6144 // Reasonable limit to avoid API issues
+        maxOutputTokens: 4096 // Reduced to save quota
       }
     });
 

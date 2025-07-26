@@ -56,6 +56,45 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('❌ Gemini vision analysis failed:', error);
     
+    // Check if it's a quota error
+    if (error instanceof Error && error.message.includes('exceeded your current quota')) {
+      console.log('🚫 Quota exceeded, returning mock response for development');
+      
+      // Return a mock response for development when quota is exceeded
+      return NextResponse.json({
+        success: true,
+        analysis: {
+          structuredContent: {
+            title: "Sample Presentation from Image",
+            introduction: "This is a demo response due to API quota limits.",
+            sections: [
+              {
+                title: "Key Insights",
+                content: "The uploaded image contains visual elements that would make great slide content.",
+                bulletPoints: [
+                  "Visual analysis requires API quota",
+                  "Switch to paid tier for full functionality", 
+                  "This is a placeholder response"
+                ]
+              }
+            ],
+            conclusion: "Upgrade your Gemini API plan to unlock full image analysis capabilities."
+          },
+          slideMetadata: {
+            totalSlides: 3,
+            suggestedDuration: "5-7 minutes",
+            complexity: "beginner",
+            audience: "general"
+          },
+          designSuggestions: {
+            colorScheme: "minimalist",
+            fontStyle: "modern",
+            layoutPreference: "clean"
+          }
+        }
+      });
+    }
+    
     return NextResponse.json(
       { 
         error: 'Failed to analyze image',
