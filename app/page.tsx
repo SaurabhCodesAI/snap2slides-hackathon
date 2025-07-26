@@ -419,9 +419,60 @@ export default function HomePage() {
       setAnalysisProgress(80);
       
       const result = await response.json();
+      console.log('🎯 Analysis result:', result);
+      
       if (result.success) {
         setAnalysisProgress(100);
-        setCurrentPresentation(result.presentation);
+        // Convert analysis to presentation format
+        const analysisData = result.analysis;
+        console.log('📊 Analysis data:', analysisData);
+        
+        const sections = analysisData?.structuredContent?.sections || [];
+        console.log('📑 Sections found:', sections.length);
+        
+        // Convert sections to slides
+        const slides = sections.map((section: any, index: number) => ({
+          id: `slide-${index}`,
+          title: section.title || `Slide ${index + 1}`,
+          content: section.content || '',
+          bulletPoints: section.bulletPoints || [],
+          type: 'content' as const,
+          layout: 'default' as const
+        }));
+
+        console.log('🎬 Generated slides:', slides);
+
+        setCurrentPresentation({
+          id: Date.now().toString(),
+          title: analysisData?.structuredContent?.title || 'My Presentation',
+          slides: slides,
+          theme: {
+            id: slideTheme || 'modern',
+            name: slideTheme || 'modern',
+            colors: {
+              primary: '#3B82F6',
+              secondary: '#1E40AF',
+              accent: '#EF4444',
+              background: '#FFFFFF',
+              text: '#1F2937'
+            },
+            fonts: {
+              heading: 'Inter',
+              body: 'Inter'
+            },
+            layout: 'modern' as const
+          },
+          metadata: {
+            created: new Date(),
+            updated: new Date(),
+            author: 'Snap2Slides User',
+            description: analysisData?.structuredContent?.introduction || 'Generated presentation'
+          },
+          settings: {
+            autoAdvance: false,
+            timing: 5000
+          }
+        });
         setCurrentSlideIndex(0);
         setViewMode('editor');
         toast.success('Presentation created successfully', { id: 'analysis' });
