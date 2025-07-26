@@ -2,7 +2,7 @@
 // This file defines the main HTML structure and integrates the Auth0 provider.
 
 import './globals.css'; // Importing global styles.
-// import AuthProvider from './auth-provider'; // Temporarily disabled due to Auth0 issues
+import AuthProvider from './auth-provider';
 import { Inter, JetBrains_Mono } from "next/font/google"; // For typography.
 import { Metadata, Viewport } from 'next';
 import { Toaster } from 'sonner';
@@ -120,8 +120,9 @@ export default function RootLayout({
       <body className="antialiased font-sans">
         <StructuredData />
         <ErrorBoundary>
-          {/* AuthProvider temporarily disabled due to Auth0 configuration issues */}
-          {children}
+          <AuthProvider>
+            {children}
+          </AuthProvider>
         </ErrorBoundary>
         <Toaster 
           position="top-right" 
