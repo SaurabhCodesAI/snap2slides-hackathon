@@ -1,6 +1,7 @@
 // Enhanced AI vision analysis for Snap2Slides
 // This is where the magic happens - we use Google's Gemini AI to understand images
 // and transform them into beautiful presentation slides
+// Fixed: Lazy initialization to prevent build-time errors
 
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import type { GeminiAnalysisResult, SlideTheme } from '@/types/slides';
