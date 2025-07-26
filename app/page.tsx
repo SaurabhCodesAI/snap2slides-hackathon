@@ -4,7 +4,7 @@
 // This is the heart of our app, designed to be simple but powerful
 
 import { useState, useCallback, useEffect, useMemo, memo } from 'react';
-import { useUser } from '@auth0/nextjs-auth0/client'; // Auth0 user hook
+// import { useUser } from '@auth0/nextjs-auth0/client'; // Temporarily disabled due to Auth0 issues
 import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
@@ -91,74 +91,47 @@ const useTheme = () => {
 };
 
 /**
- * Memoized Auth Header component
+ * Simple Auth Header component
  */
 const AuthHeader = memo<{ user: any }>(({ user }) => (
-  <motion.div 
-    initial={{ opacity: 0, y: -20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-    className="fixed top-3 sm:top-6 right-3 sm:right-6 z-50 flex items-center space-x-2 sm:space-x-3"
-  >
+  <div className="fixed top-4 right-4 z-50">
     {user ? (
-      <div className="flex items-center space-x-2 sm:space-x-3 backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 border border-gray-200/50 dark:border-gray-700/50 px-3 sm:px-4 py-2 rounded-xl sm:rounded-2xl shadow-lg">
+      <div className="flex items-center space-x-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-4 py-2 rounded-lg shadow">
         {user.picture && (
-          <motion.img 
+          <img 
             src={user.picture} 
-            alt={`${user.name || 'User'} profile picture`}
-            className="w-6 h-6 sm:w-8 sm:h-8 rounded-full"
-            loading="lazy"
-            width={32}
-            height={32}
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            alt="Profile"
+            className="w-8 h-8 rounded-full"
           />
         )}
-        <span className="font-medium text-gray-900 dark:text-white text-xs sm:text-sm max-w-[120px] sm:max-w-none truncate">
+        <span className="text-sm text-gray-900 dark:text-white">
           {user.name || user.email || "User"}
         </span>
         <button
           onClick={() => window.location.href = '/api/auth/logout'}
-          className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors duration-200 hidden sm:block"
+          className="text-sm text-gray-500 hover:text-gray-700"
         >
           Sign out
         </button>
-        <button
-          onClick={() => window.location.href = '/api/auth/logout'}
-          className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors duration-200 sm:hidden"
-        >
-          ←
-        </button>
       </div>
     ) : (
-      <button
-        onClick={() => window.location.href = '/api/auth/login'}
-        className="backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 border border-gray-200/50 dark:border-gray-700/50 px-3 sm:px-4 py-2 rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium text-gray-900 dark:text-white hover:bg-white/90 dark:hover:bg-gray-800/90 transition-all duration-200"
-      >
-        Sign in
-      </button>
+      <div className="bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 px-4 py-2 rounded-lg text-sm border">
+        Demo Mode - Auth Disabled
+      </div>
     )}
-  </motion.div>
+  </div>
 ));
 
 AuthHeader.displayName = 'AuthHeader';
 
 /**
- * Memoized loading state component
+ * Simple loading state component
  */
 const LoadingState = memo(() => (
-  <div className="min-h-screen relative overflow-hidden bg-white dark:bg-black">
-    <MinimalBackground />
-    <div className="relative z-10 min-h-screen flex items-center justify-center">
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="text-center"
-      >
-        <div className="w-8 h-8 border-2 border-gray-300 dark:border-gray-600 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
-        <h2 className="text-xl font-medium text-gray-900 dark:text-white">Loading</h2>
-      </motion.div>
+  <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center">
+    <div className="text-center">
+      <div className="w-8 h-8 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
+      <h2 className="text-xl text-gray-900 dark:text-white">Loading...</h2>
     </div>
   </div>
 ));
@@ -487,11 +460,11 @@ const OutputFormatSelector: React.FC<{
 };
 
 export default function HomePage() {
-  // Auth state
-  const { user, error: userError, isLoading: userLoading } = useUser();
-  // const user = null; // Mock user for demo
-  // const userError: Error | null = null;
-  // const userLoading = false;
+  // Auth state - temporarily disabled to fix authentication issues
+  // const { user, error: userError, isLoading: userLoading } = useUser();
+  const user = null; // Mock user for demo
+  const userError: Error | null = null;
+  const userLoading = false;
 
   // Form state
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
