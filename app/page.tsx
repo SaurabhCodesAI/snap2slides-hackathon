@@ -404,7 +404,7 @@ export default function HomePage() {
       
       setAnalysisProgress(30);
       
-      const response = await fetch('/api/gemini/analyze', {
+      const response = await fetch('/api/gemini-vision', {
         method: 'POST',
         body: formData,
       });
