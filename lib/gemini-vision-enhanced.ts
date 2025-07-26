@@ -5,13 +5,20 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import type { GeminiAnalysisResult, SlideTheme } from '@/types/slides';
 
-// Make sure we have the API key - this is critical for everything to work
-if (!process.env.GEMINI_API_KEY) {
-  throw new Error('GEMINI_API_KEY environment variable is required');
-}
+// Initialize the AI client only when needed - this prevents build-time errors
+let genAI: GoogleGenerativeAI | null = null;
 
-// Initialize the AI client - this connects us to Google's AI models
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const getGenAI = () => {
+  if (!process.env.GEMINI_API_KEY) {
+    throw new Error('GEMINI_API_KEY environment variable is required');
+  }
+  
+  if (!genAI) {
+    genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+  }
+  
+  return genAI;
+};
 
 // Simple delay function - sometimes we need to wait before trying again
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -55,7 +62,7 @@ export async function analyzeImageWithGeminiPro(
 ): Promise<GeminiAnalysisResult> {
   return retryWithBackoff(async () => {
     // Use gemini-1.5-flash for lower quota usage - still excellent quality
-    const model = genAI.getGenerativeModel({ 
+    const model = getGenAI().getGenerativeModel({ 
       model: 'gemini-1.5-flash',
       generationConfig: {
         temperature: 0.3, // Keep responses focused and consistent
@@ -171,7 +178,7 @@ export async function enhanceSlideContentPro(
   targetAudience?: string
 ): Promise<string> {
   return retryWithBackoff(async () => {
-    const model = genAI.getGenerativeModel({ 
+    const model = getGenAI().getGenerativeModel({ 
       model: 'gemini-1.5-pro-latest',
       generationConfig: {
         temperature: 0.4, // Allow some creativity but keep it professional
@@ -215,7 +222,7 @@ export async function generateSmartTheme(
   industry?: string
 ): Promise<SlideTheme> {
   return retryWithBackoff(async () => {
-    const model = genAI.getGenerativeModel({ 
+    const model = getGenAI().getGenerativeModel({ 
       model: 'gemini-1.5-pro-latest',
       generationConfig: {
         temperature: 0.6,
@@ -302,7 +309,7 @@ export async function optimizeSlideFlow(
   presentationType: 'pitch' | 'training' | 'report' | 'sales' = 'pitch'
 ): Promise<string[]> {
   return retryWithBackoff(async () => {
-    const model = genAI.getGenerativeModel({ 
+    const model = getGenAI().getGenerativeModel({ 
       model: 'gemini-1.5-pro-latest',
       generationConfig: {
         temperature: 0.3, // Keep suggestions logical and consistent
@@ -358,7 +365,7 @@ export async function generateSpeakerNotes(
 ): Promise<string> {
   try {
     const result = await retryWithBackoff(async () => {
-      const model = genAI.getGenerativeModel({ 
+      const model = getGenAI().getGenerativeModel({ 
         model: 'gemini-1.5-pro-latest',
         generationConfig: {
           temperature: 0.4, // Allow some personality in the notes
