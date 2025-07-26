@@ -268,16 +268,120 @@ const EnhancedDropzone: React.FC<{
   );
 };
 
-// Simple theme selector
+// Helper function to get theme data by ID
+const getThemeData = (themeId: string) => {
+  const themeMap = {
+    minimalist: {
+      colors: {
+        primary: '#374151',
+        secondary: '#6B7280',
+        accent: '#10B981',
+        background: '#FFFFFF',
+        text: '#1F2937'
+      },
+      fonts: {
+        heading: 'Inter',
+        body: 'Inter'
+      },
+      layout: 'minimal' as const
+    },
+    corporate: {
+      colors: {
+        primary: '#1E40AF',
+        secondary: '#3B82F6',
+        accent: '#F59E0B',
+        background: '#FFFFFF',
+        text: '#1F2937'
+      },
+      fonts: {
+        heading: 'Inter',
+        body: 'Inter'
+      },
+      layout: 'modern' as const
+    },
+    creative: {
+      colors: {
+        primary: '#7C3AED',
+        secondary: '#A855F7',
+        accent: '#EC4899',
+        background: '#FFFFFF',
+        text: '#1F2937'
+      },
+      fonts: {
+        heading: 'Inter',
+        body: 'Inter'
+      },
+      layout: 'creative' as const
+    }
+  };
+  
+  return themeMap[themeId as keyof typeof themeMap] || themeMap.minimalist;
+};
+
+// Simple theme selector with actual theme data
 const ThemeSelector: React.FC<{
   selectedTheme: string;
   onThemeChange: (theme: string) => void;
   disabled?: boolean;
 }> = ({ selectedTheme, onThemeChange, disabled }) => {
   const themes = [
-    { id: 'minimalist', name: 'Minimalist', color: 'bg-gray-100' },
-    { id: 'corporate', name: 'Corporate', color: 'bg-blue-100' },
-    { id: 'creative', name: 'Creative', color: 'bg-purple-100' },
+    { 
+      id: 'minimalist', 
+      name: 'Minimalist', 
+      color: 'bg-gray-100',
+      theme: {
+        colors: {
+          primary: '#374151',
+          secondary: '#6B7280',
+          accent: '#10B981',
+          background: '#FFFFFF',
+          text: '#1F2937'
+        },
+        fonts: {
+          heading: 'Inter',
+          body: 'Inter'
+        },
+        layout: 'minimal' as const
+      }
+    },
+    { 
+      id: 'corporate', 
+      name: 'Corporate', 
+      color: 'bg-blue-100',
+      theme: {
+        colors: {
+          primary: '#1E40AF',
+          secondary: '#3B82F6',
+          accent: '#F59E0B',
+          background: '#FFFFFF',
+          text: '#1F2937'
+        },
+        fonts: {
+          heading: 'Inter',
+          body: 'Inter'
+        },
+        layout: 'modern' as const
+      }
+    },
+    { 
+      id: 'creative', 
+      name: 'Creative', 
+      color: 'bg-purple-100',
+      theme: {
+        colors: {
+          primary: '#7C3AED',
+          secondary: '#A855F7',
+          accent: '#EC4899',
+          background: '#FFFFFF',
+          text: '#1F2937'
+        },
+        fonts: {
+          heading: 'Inter',
+          body: 'Inter'
+        },
+        layout: 'creative' as const
+      }
+    },
   ];
 
   return (
@@ -423,59 +527,211 @@ export default function HomePage() {
       
       if (result.success) {
         setAnalysisProgress(100);
-        // Convert analysis to presentation format
-        const analysisData = result.analysis;
-        console.log('📊 Analysis data:', analysisData);
         
-        const sections = analysisData?.structuredContent?.sections || [];
-        console.log('📑 Sections found:', sections.length);
-        
-        // Convert sections to slides
-        const slides = sections.map((section: any, index: number) => ({
-          id: `slide-${index}`,
-          title: section.title || `Slide ${index + 1}`,
-          content: section.content || '',
-          bulletPoints: section.bulletPoints || [],
-          type: 'content' as const,
-          layout: 'default' as const
-        }));
+        // Check output format and handle accordingly
+        if (outputFormat === 'pptx') {
+          console.log('🎯 PowerPoint format selected - generating PPTX download');
+          
+          // Convert analysis to presentation format for PowerPoint
+          const analysisData = result.analysis;
+          const sections = analysisData?.structuredContent?.sections || [];
+          
+          // Convert sections to slides
+          const slides = sections.map((section: any, index: number) => {
+            const contents: any[] = [];
+            
+            // Add title content (API returns 'heading', not 'title')
+            contents.push({
+              id: `title-${index}`,
+              type: 'title',
+              content: section.heading || section.title || `Slide ${index + 1}`,
+              position: { x: 0, y: 0 },
+              style: { fontSize: '2rem', fontWeight: 'bold', alignment: 'center' }
+            });
+            
+            // Add main content if available
+            if (section.content) {
+              contents.push({
+                id: `content-${index}`,
+                type: 'text',
+                content: section.content,
+                position: { x: 0, y: 100 },
+                style: { fontSize: '1.2rem', alignment: 'left' }
+              });
+            }
+            
+            // Add bullet points if available (API returns 'bullets', not 'bulletPoints')
+            const bulletPoints = section.bullets || section.bulletPoints || [];
+            if (bulletPoints && bulletPoints.length > 0) {
+              bulletPoints.forEach((point: string, bulletIndex: number) => {
+                contents.push({
+                  id: `bullet-${index}-${bulletIndex}`,
+                  type: 'bullet',
+                  content: point,
+                  position: { x: 20, y: 200 + (bulletIndex * 40) },
+                  style: { fontSize: '1rem', alignment: 'left' }
+                });
+              });
+            }
 
-        console.log('🎬 Generated slides:', slides);
+            return {
+              id: `slide-${index}`,
+              title: section.heading || section.title || `Slide ${index + 1}`,
+              contents: contents,
+              theme: {
+                id: slideTheme || 'minimalist',
+                name: slideTheme || 'minimalist',
+                ...getThemeData(slideTheme || 'minimalist')
+              }
+            };
+          });
 
-        setCurrentPresentation({
-          id: Date.now().toString(),
-          title: analysisData?.structuredContent?.title || 'My Presentation',
-          slides: slides,
-          theme: {
-            id: slideTheme || 'modern',
-            name: slideTheme || 'modern',
-            colors: {
-              primary: '#3B82F6',
-              secondary: '#1E40AF',
-              accent: '#EF4444',
-              background: '#FFFFFF',
-              text: '#1F2937'
+          const presentationData = {
+            id: Date.now().toString(),
+            title: analysisData?.structuredContent?.title || 'My Presentation',
+            slides: slides,
+            theme: {
+              id: slideTheme || 'minimalist',
+              name: slideTheme || 'minimalist',
+              ...getThemeData(slideTheme || 'minimalist')
             },
-            fonts: {
-              heading: 'Inter',
-              body: 'Inter'
+            metadata: {
+              created: new Date(),
+              updated: new Date(),
+              author: 'Snap2Slides User',
+              description: analysisData?.structuredContent?.introduction || 'Generated presentation'
             },
-            layout: 'modern' as const
-          },
-          metadata: {
-            created: new Date(),
-            updated: new Date(),
-            author: 'Snap2Slides User',
-            description: analysisData?.structuredContent?.introduction || 'Generated presentation'
-          },
-          settings: {
-            autoAdvance: false,
-            timing: 5000
+            settings: {
+              autoAdvance: false,
+              timing: 5000
+            }
+          };
+
+          console.log('📦 Calling PowerPoint generation API...');
+          
+          // Call PowerPoint generation API
+          const pptxResponse = await fetch('/api/generate-pptx-slides', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              presentation: presentationData,
+            }),
+          });
+
+          console.log('� PowerPoint API response status:', pptxResponse.status);
+
+          if (!pptxResponse.ok) {
+            const errorData = await pptxResponse.json();
+            console.error('❌ PowerPoint generation error:', errorData);
+            throw new Error(errorData.error || 'PPTX generation failed');
           }
-        });
-        setCurrentSlideIndex(0);
-        setViewMode('editor');
-        toast.success('Presentation created successfully', { id: 'analysis' });
+
+          console.log('📦 Converting response to blob...');
+          const pptxBlob = await pptxResponse.blob();
+          console.log('📊 Blob size:', pptxBlob.size, 'bytes');
+          
+          // Create download link and trigger download
+          const downloadUrl = URL.createObjectURL(pptxBlob);
+          const downloadLink = document.createElement('a');
+          downloadLink.href = downloadUrl;
+          downloadLink.download = `${presentationData.title}.pptx`;
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+          document.body.removeChild(downloadLink);
+          
+          // Clean up the URL object
+          setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
+          
+          console.log('📥 PowerPoint download triggered successfully!');
+          toast.success('PowerPoint presentation downloaded!', { id: 'analysis' });
+          
+        } else {
+          console.log('🎯 Interactive format selected - generating web presentation');
+          
+          // Convert analysis to presentation format for interactive viewing
+          const analysisData = result.analysis;
+          console.log('�📊 Analysis data:', analysisData);
+          
+          const sections = analysisData?.structuredContent?.sections || [];
+          console.log('📑 Sections found:', sections.length);
+          console.log('🔍 First section structure:', sections[0]);
+          console.log('🗃️ Full analysis data structure:', JSON.stringify(analysisData, null, 2));
+          // Convert sections to slides
+          const slides = sections.map((section: any, index: number) => {
+            const contents: any[] = [];
+            
+            // Add title content (API returns 'heading', not 'title')
+            contents.push({
+              id: `title-${index}`,
+              type: 'title',
+              content: section.heading || section.title || `Slide ${index + 1}`,
+              position: { x: 0, y: 0 },
+              style: { fontSize: '2rem', fontWeight: 'bold', alignment: 'center' }
+            });
+            
+            // Add main content if available
+            if (section.content) {
+              contents.push({
+                id: `content-${index}`,
+                type: 'text',
+                content: section.content,
+                position: { x: 0, y: 100 },
+                style: { fontSize: '1.2rem', alignment: 'left' }
+              });
+            }
+            
+            // Add bullet points if available (API returns 'bullets', not 'bulletPoints')
+            const bulletPoints = section.bullets || section.bulletPoints || [];
+            if (bulletPoints && bulletPoints.length > 0) {
+              bulletPoints.forEach((point: string, bulletIndex: number) => {
+                contents.push({
+                  id: `bullet-${index}-${bulletIndex}`,
+                  type: 'bullet',
+                  content: point,
+                  position: { x: 20, y: 200 + (bulletIndex * 40) },
+                  style: { fontSize: '1rem', alignment: 'left' }
+                });
+              });
+            }
+            
+            return {
+              id: `slide-${index}`,
+              title: section.heading || section.title || `Slide ${index + 1}`,
+              contents: contents,
+              theme: {
+                id: slideTheme || 'minimalist',
+                name: slideTheme || 'minimalist',
+                ...getThemeData(slideTheme || 'minimalist')
+              }
+            };
+          });
+
+          console.log('🎬 Generated slides:', slides);
+
+          setCurrentPresentation({
+            id: Date.now().toString(),
+            title: analysisData?.structuredContent?.title || 'My Presentation',
+            slides: slides,
+            theme: {
+              id: slideTheme || 'minimalist',
+              name: slideTheme || 'minimalist',
+              ...getThemeData(slideTheme || 'minimalist')
+            },
+            metadata: {
+              created: new Date(),
+              updated: new Date(),
+              author: 'Snap2Slides User',
+              description: analysisData?.structuredContent?.introduction || 'Generated presentation'
+            },
+            settings: {
+              autoAdvance: false,
+              timing: 5000
+            }
+          });
+          setCurrentSlideIndex(0);
+          setViewMode('editor');
+          toast.success('Presentation created successfully', { id: 'analysis' });
+        }
       } else {
         throw new Error(result.error || 'Analysis failed');
       }
@@ -488,7 +744,7 @@ export default function HomePage() {
       setIsAnalyzing(false);
       setAnalysisProgress(0);
     }
-  }, [selectedFile, prompt, slideTheme]);
+  }, [selectedFile, prompt, slideTheme, outputFormat]);
 
   const handleNewPresentation = useCallback(() => {
     setCurrentPresentation(null);

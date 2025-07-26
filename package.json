@@ -27,15 +27,23 @@
   ],
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "node server.js",
+    "dev:next": "next dev",
+    "dev:port": "node server.js",
+    "dev:clean": "rimraf .next && node server.js",
     "build": "next build",
     "start": "next start",
+    "start:custom": "NODE_ENV=production node server.js",
     "lint": "next lint",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "type-check": "tsc --noEmit",
-    "analyze": "ANALYZE=true npm run build"
+    "analyze": "ANALYZE=true npm run build",
+    "port:check": "node scripts/port-diagnostics.js check",
+    "port:suggest": "node scripts/port-diagnostics.js suggest",
+    "port:monitor": "node scripts/port-diagnostics.js monitor",
+    "port:diagnose": "node scripts/port-diagnostics.js full"
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^3.5.0",
@@ -78,6 +86,7 @@
     "jest": "^30.0.5",
     "jest-environment-jsdom": "^30.0.5",
     "postcss": "^8",
+    "rimraf": "^6.0.1",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }
