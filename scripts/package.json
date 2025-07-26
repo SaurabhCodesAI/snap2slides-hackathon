@@ -1,0 +1,26 @@
+{
+  "name": "snap2slides-development",
+  "version": "1.0.0",
+  "description": "Development workflow automation for Snap2Slides project",
+  "private": true,
+  "scripts": {
+    "prepare": "node scripts/validate-build.js",
+    "deploy:staging": "node scripts/deploy-helper.js --env=staging",
+    "deploy:prod": "node scripts/validate-build.js && node scripts/deploy-helper.js --env=production",
+    "validate": "node scripts/validate-build.js --validate-only"
+  },
+  "devDependencies": {
+    "chalk": "^4.1.2",
+    "ora": "^5.4.1"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "local"
+  },
+  "author": "Snap2Slides Team",
+  "license": "Private"
+}
