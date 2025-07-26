@@ -21,11 +21,15 @@ afterAll(() => {
   console.error = originalError;
 });
 
-// Mock window.location
+// Mock window.location for navigation testing
 const mockLocation = {
-  href: ''
+  href: '',
+  assign: jest.fn(),
+  replace: jest.fn(),
+  reload: jest.fn()
 };
-// Use delete and redefine to avoid the "Cannot redefine property" error
+
+// Mock window.location by deleting and setting it
 delete (window as any).location;
 (window as any).location = mockLocation;
 
@@ -90,6 +94,14 @@ describe('ErrorBoundary Component', () => {
   it('handles go home button click', async () => {
     const user = userEvent.setup();
     
+    // Spy on location href setter
+    let hrefValue = '';
+    Object.defineProperty(mockLocation, 'href', {
+      get: () => hrefValue,
+      set: (value) => { hrefValue = value; },
+      configurable: true
+    });
+    
     render(
       <ErrorBoundary>
         <ThrowError shouldThrow={true} />
@@ -99,7 +111,8 @@ describe('ErrorBoundary Component', () => {
     const goHomeButton = screen.getByText('Go Home');
     await user.click(goHomeButton);
     
-    expect(mockLocation.href).toBe('/');
+    // Check if href was set to '/'
+    expect(hrefValue).toBe('/');
   });
 
   it('logs error to console', () => {
