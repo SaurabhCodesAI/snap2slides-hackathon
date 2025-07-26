@@ -12,10 +12,6 @@
       "maxDuration": 30
     }
   },
-  "env": {
-    "GEMINI_API_KEY": "@gemini_api_key",
-    "MONGODB_URI": "@mongodb_uri"
-  },
   "headers": [
     {
       "source": "/(.*)",
