@@ -4,7 +4,6 @@
 // This is the heart of our app, designed to be simple but powerful
 
 import { useState, useCallback, useEffect, useMemo, memo } from 'react';
-import { useUser } from '@auth0/nextjs-auth0/client';
 import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
@@ -14,7 +13,6 @@ import type { SlidePresentation, ThemeVariant, PresentationFormat } from '@/type
 
 // Custom hooks for features
 import { useKeyboardShortcuts, SHORTCUTS } from '@/hooks/useKeyboardShortcuts';
-import ClientOnly from '@/components/ClientOnly';
 
 // UI Components
 import ProgressBar from '@/components/ui/ProgressBar';
@@ -72,18 +70,17 @@ const useTheme = () => {
       if (savedTheme) {
         setTheme(savedTheme);
       } else {
-        // Detect system preference
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        setTheme(prefersDark ? 'dark' : 'light');
+        // Default to dark theme to prevent hydration mismatch
+        setTheme('dark');
       }
     }
   }, []);
 
   // Apply theme changes
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', theme === 'dark');
-    document.documentElement.classList.toggle('light', theme === 'light');
     if (typeof window !== 'undefined') {
+      document.documentElement.classList.toggle('dark', theme === 'dark');
+      document.documentElement.classList.toggle('light', theme === 'light');
       window.localStorage.setItem('theme', theme);
     }
   }, [theme]);
@@ -92,88 +89,19 @@ const useTheme = () => {
 };
 
 /**
- * Simple Auth Header component with hydration-safe rendering
+ * Simple Header component - static text only
  */
-const AuthHeader = memo<{ user: any }>(({ user }) => (
+const SimpleHeader = memo(() => (
   <div className="fixed top-4 right-4 z-50">
-    {user ? (
-      <div className="flex items-center space-x-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-4 py-2 rounded-lg shadow">
-        {user.picture && (
-          <img 
-            src={user.picture} 
-            alt="Profile"
-            className="w-8 h-8 rounded-full"
-          />
-        )}
-        <span className="text-sm text-gray-900 dark:text-white">
-          {user.name || user.email || "User"}
-        </span>
-        <a
-          href="/api/auth/logout"
-          className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
-        >
-          Sign out
-        </a>
-      </div>
-    ) : (
-      <a
-        href="/api/auth/login"
-        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm transition-colors"
-      >
-        Sign in
-      </a>
-    )}
-  </div>
-));
-
-AuthHeader.displayName = 'AuthHeader';
-
-/**
- * Simple loading state component
- */
-const LoadingState = memo(() => (
-  <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center">
-    <div className="text-center">
-      <div className="w-8 h-8 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
-      <h2 className="text-xl text-gray-900 dark:text-white">Loading...</h2>
+    <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur border border-gray-200 dark:border-gray-700 px-4 py-2 rounded-lg shadow">
+      <span className="text-sm text-gray-900 dark:text-white font-medium">
+        ✨ Snap2Slides
+      </span>
     </div>
   </div>
 ));
 
-LoadingState.displayName = 'LoadingState';
-
-/**
- * Memoized error state component
- */
-const ErrorState = memo<{ error: string }>(({ error }) => (
-  <div className="min-h-screen relative overflow-hidden bg-white dark:bg-black">
-    <MinimalBackground />
-    <div className="relative z-10 min-h-screen flex flex-col items-center justify-center p-6">
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 border border-gray-200 dark:border-gray-700 p-8 rounded-3xl shadow-2xl text-center max-w-md"
-      >
-        <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
-          <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
-          </svg>
-        </div>
-        <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">Authentication Error</h2>
-        <p className="text-gray-600 dark:text-gray-300 mb-6">{error}</p>
-        <button
-          onClick={() => window.location.href = '/api/auth/login'}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-xl transition-all duration-200"
-        >
-          Try Again
-        </button>
-      </motion.div>
-    </div>
-  </div>
-));
-
-ErrorState.displayName = 'ErrorState';
+SimpleHeader.displayName = 'SimpleHeader';
 
 // Simple dropzone component
 const EnhancedDropzone: React.FC<{
@@ -464,18 +392,6 @@ const OutputFormatSelector: React.FC<{
 };
 
 export default function HomePage() {
-  return (
-    <ClientOnly fallback={<LoadingState />}>
-      <AuthenticatedApp />
-    </ClientOnly>
-  );
-}
-
-// Separate component that handles authentication
-function AuthenticatedApp() {
-  // Auth state - now safely in client-only component
-  const { user, error: userError, isLoading: userLoading } = useUser();
-
   // Form state
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [prompt, setPrompt] = useState<string>('');
@@ -782,16 +698,12 @@ function AuthenticatedApp() {
     [SHORTCUTS.HELP]: () => setShowHelpModal(true)
   }, { enabled: !isAnalyzing });
 
-  // Loading and error states
-  if (userLoading) return <LoadingState />;
-  if (userError) return <ErrorState error={(userError as Error)?.message || 'An error occurred'} />;
-
   // Editor view - Apple-style presentation editor
   if (viewMode === 'editor' && currentPresentation) {
     return (
       <div className="min-h-screen bg-white dark:bg-black transition-colors duration-500">
         <MinimalBackground />
-        <AuthHeader user={user} />
+        <SimpleHeader />
         
         {/* Header */}
         <div className="bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50 p-3 sm:p-4">
@@ -859,7 +771,7 @@ function AuthenticatedApp() {
   return (
     <div className="min-h-screen bg-white dark:bg-black transition-colors duration-500">
       <MinimalBackground />
-      <AuthHeader user={user} />
+      <SimpleHeader />
       
       {/* Main Content */}
       <main className="relative z-10 min-h-screen flex flex-col items-center justify-start px-4 sm:px-6 py-6 sm:py-12 md:py-20">

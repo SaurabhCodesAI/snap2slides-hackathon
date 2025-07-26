@@ -56,7 +56,6 @@
     "port:diagnose": "node scripts/port-diagnostics.js full"
   },
   "dependencies": {
-    "@auth0/nextjs-auth0": "^3.5.0",
     "@google-cloud/storage": "^7.16.0",
     "@google/generative-ai": "^0.15.0",
     "@heroicons/react": "^2.2.0",
