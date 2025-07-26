@@ -14,6 +14,7 @@ import type { SlidePresentation, ThemeVariant, PresentationFormat } from '@/type
 
 // Custom hooks for features
 import { useKeyboardShortcuts, SHORTCUTS } from '@/hooks/useKeyboardShortcuts';
+import ClientOnly from '@/components/ClientOnly';
 
 // UI Components
 import ProgressBar from '@/components/ui/ProgressBar';
@@ -91,7 +92,7 @@ const useTheme = () => {
 };
 
 /**
- * Simple Auth Header component
+ * Simple Auth Header component with hydration-safe rendering
  */
 const AuthHeader = memo<{ user: any }>(({ user }) => (
   <div className="fixed top-4 right-4 z-50">
@@ -107,20 +108,20 @@ const AuthHeader = memo<{ user: any }>(({ user }) => (
         <span className="text-sm text-gray-900 dark:text-white">
           {user.name || user.email || "User"}
         </span>
-        <button
-          onClick={() => window.location.href = '/api/auth/logout'}
-          className="text-sm text-gray-500 hover:text-gray-700"
+        <a
+          href="/api/auth/logout"
+          className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
         >
           Sign out
-        </button>
+        </a>
       </div>
     ) : (
-      <button
-        onClick={() => window.location.href = '/api/auth/login'}
+      <a
+        href="/api/auth/login"
         className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm transition-colors"
       >
         Sign in
-      </button>
+      </a>
     )}
   </div>
 ));
@@ -463,7 +464,16 @@ const OutputFormatSelector: React.FC<{
 };
 
 export default function HomePage() {
-  // Auth state
+  return (
+    <ClientOnly fallback={<LoadingState />}>
+      <AuthenticatedApp />
+    </ClientOnly>
+  );
+}
+
+// Separate component that handles authentication
+function AuthenticatedApp() {
+  // Auth state - now safely in client-only component
   const { user, error: userError, isLoading: userLoading } = useUser();
 
   // Form state
