@@ -6,7 +6,7 @@ import { Storage } from '@google-cloud/storage';
 // Initialize Google Cloud Storage with our credentials
 // Using environment variables to keep everything secure
 const storage = new Storage({
-  projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
+  projectId: process.env.GOOGLE_CLOUD_PROJECT_ID || 'default-project',
   keyFilename: process.env.GOOGLE_CLOUD_KEY_FILE || './google-credentials.json',
 });
 

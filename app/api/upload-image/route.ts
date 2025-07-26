@@ -61,6 +61,9 @@ async function parseForm(req: NextRequest): Promise<{ fields: any; files: { imag
       if (err) return reject(err);
       // Extract image file
       const image = Array.isArray(files.image) ? files.image[0] : files.image;
+      if (!image) {
+        return reject(new Error('No image file found'));
+      }
       resolve({ fields, files: { image } });
     });
   });
@@ -82,10 +85,11 @@ export async function POST(req: NextRequest) {
     const { files } = await parseForm(req);
     const file = files.image;
     if (!file) throw new Error('No image uploaded');
-    if (!ALLOWED_TYPES.includes(file.mimetype)) throw new Error('Invalid file type');
+    if (!file.mimetype || !ALLOWED_TYPES.includes(file.mimetype)) throw new Error('Invalid file type');
     if (file.size > MAX_SIZE) throw new Error('File too large');
 
-    const ext = file.originalFilename.split('.').pop();
+    const originalFilename = file.originalFilename || 'upload';
+    const ext = originalFilename.split('.').pop() || 'jpg';
     const filename = `uploads/${Date.now()}-${nanoid()}.${ext}`;
     const blob = bucket.file(filename);
     await blob.save(file.filepath);
@@ -93,6 +97,7 @@ export async function POST(req: NextRequest) {
     const publicUrl = `https://storage.googleapis.com/${bucket.name}/${filename}`;
     return NextResponse.json({ success: true, url: publicUrl });
   } catch (error) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 400 });
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    return NextResponse.json({ success: false, error: errorMessage }, { status: 400 });
   }
 }

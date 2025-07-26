@@ -128,9 +128,9 @@ Important: Make sure the JSON is perfect - no extra commas or broken quotes.
     let jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
       // Try to find JSON wrapped in code blocks
-      jsonMatch = text.match(/```(?:json)?\s*(\{[\s\S]*\})\s*```/);
-      if (jsonMatch) {
-        jsonMatch[0] = jsonMatch[1]; // Use the captured group
+      const codeBlockMatch = text.match(/```(?:json)?\s*(\{[\s\S]*\})\s*```/);
+      if (codeBlockMatch && codeBlockMatch[1]) {
+        jsonMatch = [codeBlockMatch[1]]; // Create a new match array with the captured group
       }
     }
     

@@ -3,14 +3,14 @@
 // Main home page for Snap2Slides - where users upload images and create presentations
 // This is the heart of our app, designed to be simple but powerful
 
-import { useState, useCallback, useEffect } from 'react';
-// import { useUser } from '@auth0/nextjs-auth0/client'; // Temporarily disabled for demo
+import { useState, useCallback, useEffect, useMemo, memo } from 'react';
+import { useUser } from '@auth0/nextjs-auth0/client'; // Auth0 user hook
 import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 
 // Types and interfaces
-import type { SlidePresentation } from '@/types/slides';
+import type { SlidePresentation, ThemeVariant, PresentationFormat } from '@/types/slides';
 
 // Custom hooks for features
 import { useKeyboardShortcuts, SHORTCUTS } from '@/hooks/useKeyboardShortcuts';
@@ -19,34 +19,48 @@ import { useKeyboardShortcuts, SHORTCUTS } from '@/hooks/useKeyboardShortcuts';
 import ProgressBar from '@/components/ui/ProgressBar';
 import HelpModal from '@/components/ui/HelpModal';
 
-// Dynamic import for AIFeaturesShowcase to avoid build issues
+// Dynamic imports for better performance and code splitting
 const AIFeaturesShowcase = dynamic(() => import('@/components/features/AIFeaturesShowcase'), {
   loading: () => <div className="animate-pulse bg-gray-100 h-64 rounded-lg" />,
   ssr: false
 });
 
-// Beautiful background that works in light and dark mode
-// Inspired by Apple's design language - subtle but elegant
-const MinimalBackground = () => (
-  <div className="fixed inset-0 -z-20 overflow-hidden">
-    <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-gray-100 dark:from-black dark:via-gray-900 dark:to-gray-800" />
-    {/* Floating orbs for visual interest */}
-    <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/5 dark:bg-blue-400/10 rounded-full blur-3xl animate-pulse" />
-    <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-purple-500/5 dark:bg-purple-400/10 rounded-full blur-3xl animate-pulse delay-1000" />
-  </div>
-);
-
-// Load the slide editor only when needed - helps with performance
 const SlideEditor = dynamic(() => import('@/components/features/SlideEditor'), {
   loading: () => (
     <div className="flex items-center justify-center p-8">
       <div className="w-8 h-8 border-2 border-gray-300 dark:border-gray-600 border-t-blue-500 rounded-full animate-spin" />
     </div>
   ),
-  ssr: false // Don't render on server - this component needs browser APIs
+  ssr: false
 });
 
-// Simple theme management - users can switch between light and dark
+// ===================
+// PERFORMANCE OPTIMIZED COMPONENTS
+// ===================
+
+// ===================
+// PERFORMANCE OPTIMIZED COMPONENTS
+// ===================
+
+/**
+ * Memoized background component for better performance
+ * Beautiful background that works in light and dark mode
+ * Inspired by Apple's design language - subtle but elegant
+ */
+const MinimalBackground = memo(() => (
+  <div className="fixed inset-0 -z-20 overflow-hidden">
+    <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-gray-100 dark:from-black dark:via-gray-900 dark:to-gray-800" />
+    {/* Floating orbs for visual interest */}
+    <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/5 dark:bg-blue-400/10 rounded-full blur-3xl animate-pulse" />
+    <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-purple-500/5 dark:bg-purple-400/10 rounded-full blur-3xl animate-pulse delay-1000" />
+  </div>
+));
+
+MinimalBackground.displayName = 'MinimalBackground';
+
+/**
+ * Optimized theme management hook with localStorage persistence
+ */
 const useTheme = () => {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   
@@ -56,10 +70,15 @@ const useTheme = () => {
       const savedTheme = window.localStorage.getItem('theme') as 'dark' | 'light' | null;
       if (savedTheme) {
         setTheme(savedTheme);
+      } else {
+        // Detect system preference
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        setTheme(prefersDark ? 'dark' : 'light');
       }
     }
   }, []);
 
+  // Apply theme changes
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
     document.documentElement.classList.toggle('light', theme === 'light');
@@ -71,8 +90,10 @@ const useTheme = () => {
   return [theme, setTheme] as const;
 };
 
-// Apple-style Auth Header with refined typography
-const AuthHeader: React.FC<{ user: any }> = ({ user }) => (
+/**
+ * Memoized Auth Header component
+ */
+const AuthHeader = memo<{ user: any }>(({ user }) => (
   <motion.div 
     initial={{ opacity: 0, y: -20 }}
     animate={{ opacity: 1, y: 0 }}
@@ -118,9 +139,14 @@ const AuthHeader: React.FC<{ user: any }> = ({ user }) => (
       </button>
     )}
   </motion.div>
-);
+));
 
-const LoadingState = () => (
+AuthHeader.displayName = 'AuthHeader';
+
+/**
+ * Memoized loading state component
+ */
+const LoadingState = memo(() => (
   <div className="min-h-screen relative overflow-hidden bg-white dark:bg-black">
     <MinimalBackground />
     <div className="relative z-10 min-h-screen flex items-center justify-center">
@@ -135,9 +161,14 @@ const LoadingState = () => (
       </motion.div>
     </div>
   </div>
-);
+));
 
-const ErrorState: React.FC<{ error: string }> = ({ error }) => (
+LoadingState.displayName = 'LoadingState';
+
+/**
+ * Memoized error state component
+ */
+const ErrorState = memo<{ error: string }>(({ error }) => (
   <div className="min-h-screen relative overflow-hidden bg-white dark:bg-black">
     <MinimalBackground />
     <div className="relative z-10 min-h-screen flex flex-col items-center justify-center p-6">
@@ -163,7 +194,9 @@ const ErrorState: React.FC<{ error: string }> = ({ error }) => (
       </motion.div>
     </div>
   </div>
-);
+));
+
+ErrorState.displayName = 'ErrorState';
 
 // Simple dropzone component
 const EnhancedDropzone: React.FC<{
@@ -454,11 +487,11 @@ const OutputFormatSelector: React.FC<{
 };
 
 export default function HomePage() {
-  // Auth state - temporarily disabled for demo
-  // const { user, error: userError, isLoading: userLoading } = useUser();
-  const user = null; // Mock user for demo
-  const userError = null;
-  const userLoading = false;
+  // Auth state
+  const { user, error: userError, isLoading: userLoading } = useUser();
+  // const user = null; // Mock user for demo
+  // const userError: Error | null = null;
+  // const userLoading = false;
 
   // Form state
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -768,7 +801,7 @@ export default function HomePage() {
 
   // Loading and error states
   if (userLoading) return <LoadingState />;
-  if (userError) return <ErrorState error={userError.message} />;
+  if (userError) return <ErrorState error={(userError as Error)?.message || 'An error occurred'} />;
 
   // Editor view - Apple-style presentation editor
   if (viewMode === 'editor' && currentPresentation) {
@@ -846,21 +879,21 @@ export default function HomePage() {
       <AuthHeader user={user} />
       
       {/* Main Content */}
-      <main className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 py-12 sm:py-20">
+      <main className="relative z-10 min-h-screen flex flex-col items-center justify-start px-4 sm:px-6 py-6 sm:py-12 md:py-20">
         {/* Hero Section */}
         <motion.div 
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="text-center max-w-4xl mx-auto mb-8 sm:mb-16"
+          className="text-center max-w-4xl mx-auto mb-6 sm:mb-8 md:mb-16"
         >
-          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-light tracking-tight text-gray-900 dark:text-white mb-4 sm:mb-8 leading-tight px-4">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl xl:text-7xl font-light tracking-tight text-gray-900 dark:text-white mb-3 sm:mb-4 md:mb-8 leading-tight px-4">
             Transform ideas into
           </h1>
-          <h2 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent font-medium tracking-tight mb-4 sm:mb-8 leading-tight px-4">
+          <h2 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl xl:text-7xl bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent font-medium tracking-tight mb-3 sm:mb-4 md:mb-8 leading-tight px-4">
             beautiful presentations
           </h2>
-          <p className="text-base sm:text-xl md:text-2xl text-gray-600 dark:text-gray-300 font-light leading-relaxed max-w-2xl mx-auto px-4">
+          <p className="text-sm sm:text-base md:text-xl lg:text-2xl text-gray-600 dark:text-gray-300 font-light leading-relaxed max-w-2xl mx-auto px-4">
             Upload any image, sketch, or screenshot. Our AI creates professional slides in seconds.
           </p>
         </motion.div>
@@ -870,9 +903,9 @@ export default function HomePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="w-full max-w-2xl mx-auto px-4"
+          className="w-full max-w-2xl mx-auto px-4 pb-8"
         >
-          <form onSubmit={handleAnalyze} className="space-y-6 sm:space-y-8">
+          <form onSubmit={handleAnalyze} className="space-y-4 sm:space-y-6 md:space-y-8">
             {/* Apple-style Dropzone */}
             <motion.div
               whileHover={{ scale: 1.02 }}
@@ -913,7 +946,7 @@ export default function HomePage() {
                   </div>
 
                   {/* Theme & Format Selectors */}
-                  <div className="grid grid-cols-1 gap-4">
+                  <div className="grid grid-cols-1 gap-3 sm:gap-4">
                     <ThemeSelector
                       selectedTheme={slideTheme}
                       onThemeChange={setSlideTheme}
@@ -945,7 +978,7 @@ export default function HomePage() {
                   <motion.button
                     type="submit"
                     disabled={!selectedFile || isAnalyzing}
-                    className="w-full py-3 sm:py-4 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 disabled:bg-gray-300 dark:disabled:bg-gray-700 text-white font-medium rounded-xl transition-all duration-200 disabled:cursor-not-allowed shadow-lg hover:shadow-xl text-sm sm:text-base"
+                    className="w-full py-4 sm:py-4 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 disabled:bg-gray-300 dark:disabled:bg-gray-700 text-white font-medium rounded-xl transition-all duration-200 disabled:cursor-not-allowed shadow-lg hover:shadow-xl text-base sm:text-base"
                     whileHover={{ scale: !selectedFile || isAnalyzing ? 1 : 1.02 }}
                     whileTap={{ scale: !selectedFile || isAnalyzing ? 1 : 0.98 }}
                     transition={{ type: "spring", stiffness: 400, damping: 25 }}

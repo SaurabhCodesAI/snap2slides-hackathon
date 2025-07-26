@@ -1,0 +1,370 @@
+{
+  "folders": [
+    {
+      "name": "snap2slides",
+      "path": "."
+    }
+  ],
+  "settings": {
+    // Editor Configuration
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "editor.formatOnType": false,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true,
+      "source.organizeImports": true,
+      "source.removeUnusedImports": true
+    },
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    "editor.rulers": [80, 120],
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrapColumn": 120,
+    
+    // File Configuration
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true,
+    "files.exclude": {
+      "**/.git": true,
+      "**/.DS_Store": true,
+      "**/node_modules": true,
+      "**/.next": true,
+      "**/dist": true,
+      "**/build": true,
+      "**/.env.local": true,
+      "**/coverage": true
+    },
+    "files.watcherExclude": {
+      "**/.git/objects/**": true,
+      "**/.git/subtree-cache/**": true,
+      "**/node_modules/**": true,
+      "**/.next/**": true,
+      "**/dist/**": true,
+      "**/coverage/**": true
+    },
+    
+    // Search Configuration
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/.next": true,
+      "**/dist": true,
+      "**/build": true,
+      "**/coverage": true,
+      "**/*.log": true
+    },
+    
+    // TypeScript Configuration
+    "typescript.preferences.importModuleSpecifier": "relative",
+    "typescript.suggest.autoImports": true,
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "typescript.preferences.includePackageJsonAutoImports": "on",
+    "typescript.inlayHints.parameterNames.enabled": "literals",
+    "typescript.inlayHints.functionLikeReturnTypes.enabled": true,
+    "typescript.inlayHints.variableTypes.enabled": false,
+    
+    // JavaScript/React Configuration
+    "javascript.suggest.autoImports": true,
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "react.snippets.enable": true,
+    
+    // ESLint Configuration
+    "eslint.enable": true,
+    "eslint.validate": [
+      "javascript",
+      "javascriptreact",
+      "typescript",
+      "typescriptreact"
+    ],
+    "eslint.codeAction.showDocumentation": {
+      "enable": true
+    },
+    
+    // Prettier Configuration
+    "prettier.enable": true,
+    "prettier.requireConfig": true,
+    "prettier.ignorePath": ".prettierignore",
+    
+    // Emmet Configuration
+    "emmet.includeLanguages": {
+      "typescript": "html",
+      "typescriptreact": "html"
+    },
+    "emmet.triggerExpansionOnTab": true,
+    
+    // CSS/Tailwind Configuration
+    "css.validate": false,
+    "scss.validate": false,
+    "tailwindCSS.experimental.classRegex": [
+      ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
+      ["cn\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
+      ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+    ],
+    "tailwindCSS.includeLanguages": {
+      "typescript": "html",
+      "typescriptreact": "html"
+    },
+    
+    // Git Configuration
+    "git.enableSmartCommit": true,
+    "git.confirmSync": false,
+    "git.autofetch": true,
+    "git.autofetchPeriod": 180,
+    "git.decorations.enabled": true,
+    
+    // Terminal Configuration
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "terminal.integrated.profiles.windows": {
+      "PowerShell": {
+        "source": "PowerShell",
+        "icon": "terminal-powershell"
+      },
+      "Command Prompt": {
+        "path": [
+          "${env:windir}\\Sysnative\\cmd.exe",
+          "${env:windir}\\System32\\cmd.exe"
+        ],
+        "args": [],
+        "icon": "terminal-cmd"
+      },
+      "Git Bash": {
+        "source": "Git Bash"
+      }
+    },
+    
+    // Explorer Configuration
+    "explorer.confirmDelete": false,
+    "explorer.confirmDragAndDrop": false,
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.expand": false,
+    "explorer.fileNesting.patterns": {
+      "*.ts": "${capture}.js",
+      "*.tsx": "${capture}.js",
+      "package.json": "package-lock.json,yarn.lock,pnpm-lock.yaml",
+      "tailwind.config.*": "postcss.config.*",
+      "next.config.*": "next-env.d.ts",
+      "tsconfig.json": "tsconfig.*.json",
+      "Dockerfile": "docker-compose.yml,docker-compose.*.yml,.dockerignore",
+      "README.md": "CONTRIBUTING.md,LICENSE,CHANGELOG.md"
+    },
+    
+    // Performance Configuration
+    "typescript.disableAutomaticTypeAcquisition": false,
+    "typescript.preferences.maxInlayHintLength": 30,
+    "search.smartCase": true,
+    "search.useIgnoreFiles": true,
+    
+    // Extension Specific Settings
+    "peacock.color": "#4f46e5",
+    "todo-tree.general.tags": [
+      "BUG",
+      "HACK",
+      "FIXME",
+      "TODO",
+      "XXX",
+      "[ ]",
+      "[x]"
+    ],
+    "todo-tree.regex.regex": "(//|#|<!--|;|/\\*|^|^\\s*(-|\\d+.))\\s*($TAGS)",
+    
+    // Workspace Specific
+    "workbench.colorTheme": "GitHub Dark",
+    "workbench.iconTheme": "vscode-icons",
+    "workbench.editor.highlightModifiedTabs": true,
+    "workbench.editor.enablePreview": false,
+    "workbench.startupEditor": "readme"
+  },
+  "extensions": {
+    "recommendations": [
+      "esbenp.prettier-vscode",
+      "dbaeumer.vscode-eslint",
+      "ms-vscode.vscode-typescript-next",
+      "bradlc.vscode-tailwindcss",
+      "formulahendry.auto-rename-tag",
+      "ms-vscode.vscode-json",
+      "ms-vscode.vscode-jest",
+      "ms-playwright.playwright",
+      "humao.rest-client",
+      "ms-vscode.vscode-docker",
+      "eamodio.gitlens",
+      "github.vscode-pull-request-github",
+      "github.copilot",
+      "github.copilot-chat",
+      "gruntfuggly.todo-tree",
+      "streetsidesoftware.code-spell-checker",
+      "christian-kohler.path-intellisense",
+      "github.github-vscode-theme",
+      "vscode-icons-team.vscode-icons",
+      "ms-vscode.powershell",
+      "ms-vscode-remote.remote-containers",
+      "peacockcode.peacock",
+      "redhat.vscode-yaml",
+      "ms-vscode.hexeditor"
+    ]
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "dev",
+        "type": "shell",
+        "command": "npm run dev",
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "isBackground": true,
+        "problemMatcher": {
+          "owner": "typescript",
+          "source": "ts",
+          "fileLocation": [
+            "relative",
+            "${workspaceFolder}"
+          ],
+          "pattern": {
+            "regexp": "\\[tsc\\] (.*):(\\d+):(\\d+): (error|warning|info) (TS\\d+): (.*)",
+            "file": 1,
+            "line": 2,
+            "column": 3,
+            "severity": 4,
+            "code": 5,
+            "message": 6
+          },
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": "\\[tsc\\] Starting incremental compilation",
+            "endsPattern": "\\[tsc\\] Found 0 errors"
+          }
+        },
+        "runOptions": {
+          "runOn": "folderOpen"
+        }
+      },
+      {
+        "label": "build",
+        "type": "shell",
+        "command": "npm run build",
+        "group": "build",
+        "problemMatcher": [
+          "$tsc",
+          "$eslint-stylish"
+        ]
+      },
+      {
+        "label": "test",
+        "type": "shell",
+        "command": "npm test",
+        "group": "test",
+        "problemMatcher": {
+          "owner": "jest",
+          "fileLocation": "absolute",
+          "pattern": [
+            {
+              "regexp": "^\\s*(✕|×)\\s+(.*)$",
+              "message": 2
+            },
+            {
+              "regexp": "^\\s+at\\s+.*\\((.*):(\\d+):(\\d+)\\)$",
+              "file": 1,
+              "line": 2,
+              "column": 3
+            }
+          ]
+        }
+      },
+      {
+        "label": "test:watch",
+        "type": "shell",
+        "command": "npm run test:watch",
+        "group": "test",
+        "isBackground": true,
+        "problemMatcher": {
+          "owner": "jest",
+          "fileLocation": "absolute",
+          "pattern": [
+            {
+              "regexp": "^\\s*(✕|×)\\s+(.*)$",
+              "message": 2
+            },
+            {
+              "regexp": "^\\s+at\\s+.*\\((.*):(\\d+):(\\d+)\\)$",
+              "file": 1,
+              "line": 2,
+              "column": 3
+            }
+          ],
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": "^\\s*No tests found related to files changed since last commit\\.$",
+            "endsPattern": "^\\s*Watch Usage$"
+          }
+        }
+      },
+      {
+        "label": "lint",
+        "type": "shell",
+        "command": "npm run lint",
+        "group": "build",
+        "problemMatcher": [
+          "$eslint-stylish"
+        ]
+      },
+      {
+        "label": "lint:fix",
+        "type": "shell",
+        "command": "npm run lint:fix",
+        "group": "build"
+      },
+      {
+        "label": "type-check",
+        "type": "shell",
+        "command": "npm run type-check",
+        "group": "build",
+        "problemMatcher": [
+          "$tsc"
+        ]
+      },
+      {
+        "label": "format",
+        "type": "shell",
+        "command": "npm run format",
+        "group": "build"
+      }
+    ]
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Debug Next.js",
+        "type": "node",
+        "request": "launch",
+        "program": "${workspaceFolder}/node_modules/.bin/next",
+        "args": ["dev"],
+        "env": {
+          "NODE_OPTIONS": "--inspect"
+        },
+        "console": "integratedTerminal",
+        "skipFiles": [
+          "<node_internals>/**"
+        ]
+      },
+      {
+        "name": "Debug Jest Tests",
+        "type": "node",
+        "request": "launch",
+        "program": "${workspaceFolder}/node_modules/.bin/jest",
+        "args": ["--runInBand", "--no-cache", "--no-coverage"],
+        "env": {
+          "NODE_ENV": "test"
+        },
+        "console": "integratedTerminal",
+        "skipFiles": [
+          "<node_internals>/**"
+        ]
+      }
+    ]
+  }
+}

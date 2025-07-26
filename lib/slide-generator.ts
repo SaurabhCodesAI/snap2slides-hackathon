@@ -160,14 +160,16 @@ export function generatePresentationFromAnalysis(
   analysis: GeminiAnalysisResult,
   customTheme?: SlideTheme
 ): SlidePresentation {
-  // Select or generate theme
-  let selectedTheme = customTheme;
-  if (!selectedTheme) {
-    if (analysis.colorPalette.length >= 3) {
-      selectedTheme = generateThemeFromColors(analysis.colorPalette);
-    } else {
-      selectedTheme = DEFAULT_THEMES.find(t => t.id === analysis.suggestedTheme) || DEFAULT_THEMES[0];
-    }
+  // Select or generate theme with proper fallback
+  const fallbackTheme = DEFAULT_THEMES[0]!; // Non-null assertion since we know it exists
+  let selectedTheme: SlideTheme;
+  
+  if (customTheme) {
+    selectedTheme = customTheme;
+  } else if (analysis.colorPalette.length >= 3) {
+    selectedTheme = generateThemeFromColors(analysis.colorPalette);
+  } else {
+    selectedTheme = DEFAULT_THEMES.find(t => t.id === analysis.suggestedTheme) || fallbackTheme;
   }
 
   // Create title slide
@@ -198,7 +200,7 @@ export function generatePresentationFromAnalysis(
 
   // Create content slides
   const contentSlides = analysis.structuredContent.sections.map((section, index) =>
-    createSlideFromContent(section, selectedTheme!, index + 1)
+    createSlideFromContent(section, selectedTheme, index + 1)
   );
 
   return {
@@ -222,38 +224,56 @@ export function optimizeSlideLayout(slide: Slide): Slide {
   // Auto-arrange content based on type and priority
   const optimizedContents = [...slide.contents];
   
-  // Sort by type priority (title > subtitle > bullet > text > image)
-  const typePriority = { title: 1, subtitle: 2, bullet: 3, text: 4, image: 5 };
-  optimizedContents.sort((a, b) => typePriority[a.type] - typePriority[b.type]);
+  // Sort by type priority (title > subtitle > bullet > text > image > code > chart)
+  const typePriority: Record<string, number> = { 
+    title: 1, 
+    subtitle: 2, 
+    bullet: 3, 
+    text: 4, 
+    image: 5, 
+    code: 6, 
+    chart: 7 
+  };
+  optimizedContents.sort((a, b) => (typePriority[a.type] || 10) - (typePriority[b.type] || 10));
 
   // Reposition elements for better layout
   let currentY = 15;
-  optimizedContents.forEach((content, index) => {
+  const repositionedContents = optimizedContents.map((content, index) => {
+    let newPosition = { ...content.position };
+    
     switch (content.type) {
       case 'title':
-        content.position = { x: 50, y: currentY };
+        newPosition = { x: 50, y: currentY };
         currentY += 20;
         break;
       case 'subtitle':
-        content.position = { x: 50, y: currentY };
+        newPosition = { x: 50, y: currentY };
         currentY += 15;
         break;
       case 'bullet':
-        content.position = { x: 15, y: currentY };
+        newPosition = { x: 15, y: currentY };
         currentY += 12;
         break;
       case 'text':
-        content.position = { x: 15, y: currentY };
+        newPosition = { x: 15, y: currentY };
         currentY += 15;
         break;
       case 'image':
-        content.position = { x: 70, y: 25 };
+        newPosition = { x: 70, y: 25 };
+        break;
+      default:
+        // Keep original position for unknown types
         break;
     }
+    
+    return {
+      ...content,
+      position: newPosition
+    };
   });
 
   return {
     ...slide,
-    contents: optimizedContents
+    contents: repositionedContents
   };
 }

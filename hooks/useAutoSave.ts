@@ -55,6 +55,7 @@ export const useAutoSave = ({
         isSavingRef.current = false;
       }
     }, delay),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [onSave, enabled, delay, ...dependencies]
   );
 
@@ -66,13 +67,15 @@ export const useAutoSave = ({
     return () => {
       debouncedSave.cancel();
     };
-  }, dependencies);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedSave, enabled, ...dependencies]);
 
   const forceSave = useCallback(async () => {
     debouncedSave.cancel();
     await onSave();
     lastSavedRef.current = JSON.stringify(dependencies);
-  }, [debouncedSave, onSave, dependencies]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedSave, onSave, ...dependencies]);
 
   return {
     forceSave,
