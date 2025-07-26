@@ -18,7 +18,12 @@ import { useKeyboardShortcuts, SHORTCUTS } from '@/hooks/useKeyboardShortcuts';
 // UI Components
 import ProgressBar from '@/components/ui/ProgressBar';
 import HelpModal from '@/components/ui/HelpModal';
-import AIFeaturesShowcase from '@/components/features/AIFeaturesShowcase';
+
+// Dynamic import for AIFeaturesShowcase to avoid build issues
+const AIFeaturesShowcase = dynamic(() => import('@/components/features/AIFeaturesShowcase'), {
+  loading: () => <div className="animate-pulse bg-gray-100 h-64 rounded-lg" />,
+  ssr: false
+});
 
 // Beautiful background that works in light and dark mode
 // Inspired by Apple's design language - subtle but elegant

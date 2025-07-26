@@ -3,7 +3,11 @@
 'use client';
 
 import { memo, forwardRef } from 'react';
-import { cn } from '@/lib/utils';
+
+// Simple class name utility function
+function cn(...classes: (string | undefined | null)[]): string {
+  return classes.filter(Boolean).join(' ');
+}
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'danger' | 'ghost';

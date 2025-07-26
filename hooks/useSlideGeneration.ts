@@ -2,7 +2,19 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { sanitizeInput } from '@/lib/utils';
+
+// Simple input sanitization function
+function sanitizeInput(input: string): string {
+  if (!input || typeof input !== 'string') {
+    return '';
+  }
+  
+  return input
+    .trim()
+    .replace(/[<>]/g, '')
+    .replace(/javascript:/gi, '')
+    .substring(0, 1000);
+}
 
 interface GenerationState {
   isLoading: boolean;

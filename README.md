@@ -1,15 +1,6 @@
-# 🚀 Snap2Slides - AI-Powered Presentation Generator
+# Snap2Slides - AI-Powered Presentation Generator
 
 Transform your screenshots, handwritten notes, and images into stunning professional presentations with AI magic. Built with Next.js 14, TypeScript, and Google Gemini Vision API.
-
-[![Deploy with Vercel](https://vercel.co## 📞 Support & Contact
-
-- 📧 **Email**: saurabhpareek228@gmail.com
-- 💬 **Discord**: @saurabh_pareek_51524
-- 🐛 **Issues**: [GitHub Issues](https://github.com/SaurabhCodesAI/snap2slides-hackathon/issues)
-- 💼 **GitHub**: [@SaurabhCodesAI](https://github.com/SaurabhCodesAI)
-- 🌐 **Portfolio**: [My Projects](https://github.com/SaurabhCodesAI)n)](https://vercel.com/new/clone?repository-url=https://github.com/SaurabhCodesAI/snap2slides-hackathon)
-
 ## ✨ Features
 
 ### 🧠 AI-Powered Analysis
@@ -288,7 +279,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👨‍💻 Developer
 
-**Saurabh Pareek** - Full Stack Developer & AI Enthusiast
+**Saurabh Pareek** - AI Enthusiast
 - Passionate about building innovative AI-powered applications
 - Hackathon participant creating the future of presentation tools
 - Always open to collaboration and feedback!
