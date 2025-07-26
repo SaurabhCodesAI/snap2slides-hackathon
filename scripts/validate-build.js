@@ -49,8 +49,8 @@ async function initializeRepo() {
     
     // Setup git config for professional commits
     try {
-      execSync('git config user.name "Developer"', { stdio: 'pipe' });
-      execSync('git config user.email "dev@snap2slides.com"', { stdio: 'pipe' });
+      execSync('git config user.name "SaurabhCodesAI"', { stdio: 'pipe' });
+      execSync('git config user.email "saurabhpareek228@gmail.com"', { stdio: 'pipe' });
     } catch (e) {
       // Config might already be set
     }

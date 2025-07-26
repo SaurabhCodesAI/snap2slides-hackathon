@@ -1,6 +1,30 @@
 {
   "name": "snap2slides",
   "version": "0.1.0",
+  "description": "AI-powered presentation generator that transforms images into professional slides",
+  "author": {
+    "name": "Saurabh Pareek",
+    "email": "saurabhpareek228@gmail.com",
+    "url": "https://github.com/SaurabhCodesAI"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SaurabhCodesAI/snap2slides-hackathon.git"
+  },
+  "homepage": "https://github.com/SaurabhCodesAI/snap2slides-hackathon#readme",
+  "bugs": {
+    "url": "https://github.com/SaurabhCodesAI/snap2slides-hackathon/issues",
+    "email": "saurabhpareek228@gmail.com"
+  },
+  "keywords": [
+    "ai",
+    "presentations",
+    "nextjs",
+    "typescript",
+    "gemini",
+    "slides",
+    "hackathon"
+  ],
   "private": true,
   "scripts": {
     "dev": "next dev",
