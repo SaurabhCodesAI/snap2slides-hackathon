@@ -4,7 +4,7 @@
 // This is the heart of our app, designed to be simple but powerful
 
 import { useState, useCallback, useEffect } from 'react';
-import { useUser } from '@auth0/nextjs-auth0/client';
+// import { useUser } from '@auth0/nextjs-auth0/client'; // Temporarily disabled for demo
 import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
@@ -454,8 +454,11 @@ const OutputFormatSelector: React.FC<{
 };
 
 export default function HomePage() {
-  // Auth state
-  const { user, error: userError, isLoading: userLoading } = useUser();
+  // Auth state - temporarily disabled for demo
+  // const { user, error: userError, isLoading: userLoading } = useUser();
+  const user = null; // Mock user for demo
+  const userError = null;
+  const userLoading = false;
 
   // Form state
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
