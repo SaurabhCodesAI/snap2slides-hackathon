@@ -1,24 +1,14 @@
 {
   "version": 2,
   "name": "snap2slides",
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
-    }
-  ],
   "functions": {
     "app/api/gemini/analyze/route.ts": {
+      "maxDuration": 30
+    },
+    "app/api/gemini-vision/route.ts": {
+      "maxDuration": 30
+    },
+    "app/api/generate-pptx-slides/route.ts": {
       "maxDuration": 30
     }
   },
