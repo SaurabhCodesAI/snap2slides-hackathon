@@ -91,9 +91,9 @@ const useTheme = () => {
 };
 
 /**
- * Simple Auth Header component with bypass support
+ * Simple Auth Header component
  */
-const AuthHeader = memo<{ user: any; authBypass: boolean; onBypass: () => void }>(({ user, authBypass, onBypass }) => (
+const AuthHeader = memo<{ user: any }>(({ user }) => (
   <div className="fixed top-4 right-4 z-50">
     {user ? (
       <div className="flex items-center space-x-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-4 py-2 rounded-lg shadow">
@@ -114,29 +114,13 @@ const AuthHeader = memo<{ user: any; authBypass: boolean; onBypass: () => void }
           Sign out
         </button>
       </div>
-    ) : authBypass ? (
-      <div className="flex items-center space-x-2 bg-orange-100 dark:bg-orange-900/20 text-orange-700 dark:text-orange-400 px-4 py-2 rounded-lg text-sm border border-orange-200 dark:border-orange-800">
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
-        </svg>
-        <span>Guest Mode</span>
-      </div>
     ) : (
-      <div className="flex items-center space-x-2">
-        <button
-          onClick={() => window.location.href = '/api/auth/login'}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm transition-colors"
-        >
-          Sign in
-        </button>
-        <button
-          onClick={onBypass}
-          className="bg-gray-500 hover:bg-gray-600 text-white px-3 py-2 rounded-lg text-sm transition-colors"
-          title="Continue without signing in"
-        >
-          Skip
-        </button>
-      </div>
+      <button
+        onClick={() => window.location.href = '/api/auth/login'}
+        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm transition-colors"
+      >
+        Sign in
+      </button>
     )}
   </div>
 ));
@@ -479,37 +463,8 @@ const OutputFormatSelector: React.FC<{
 };
 
 export default function HomePage() {
-  // Auth state with bypass mechanism
+  // Auth state
   const { user, error: userError, isLoading: userLoading } = useUser();
-  const [authBypass, setAuthBypass] = useState(false);
-  const [authTimeout, setAuthTimeout] = useState(false);
-
-  // Auto-bypass auth after 10 seconds if loading
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (userLoading && !user && !userError) {
-        console.log('🔄 Auth taking too long, enabling bypass mode');
-        setAuthTimeout(true);
-        setAuthBypass(true);
-        toast.info('Authentication is taking longer than expected. Continuing in guest mode.', {
-          duration: 5000,
-        });
-      }
-    }, 10000);
-
-    return () => clearTimeout(timer);
-  }, [userLoading, user, userError]);
-
-  // Auto-bypass if there's an auth error
-  useEffect(() => {
-    if (userError) {
-      console.log('❌ Auth error detected, enabling bypass mode:', userError);
-      setAuthBypass(true);
-      toast.warning('Authentication failed. Continuing in guest mode.', {
-        duration: 5000,
-      });
-    }
-  }, [userError]);
 
   // Form state
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -809,14 +764,6 @@ export default function HomePage() {
     setCurrentSlideIndex(0);
   }, []);
 
-  const handleAuthBypass = useCallback(() => {
-    setAuthBypass(true);
-    console.log('🔓 User manually bypassed authentication');
-    toast.success('Continuing in guest mode. You can still use all features!', {
-      duration: 4000,
-    });
-  }, []);
-
   // Keyboard shortcuts
   useKeyboardShortcuts({
     [SHORTCUTS.NEW]: handleNewPresentation,
@@ -825,16 +772,16 @@ export default function HomePage() {
     [SHORTCUTS.HELP]: () => setShowHelpModal(true)
   }, { enabled: !isAnalyzing });
 
-  // Loading and error states with bypass support
-  if (userLoading && !authBypass && !authTimeout) return <LoadingState />;
-  if (userError && !authBypass) return <ErrorState error={(userError as Error)?.message || 'An error occurred'} />;
+  // Loading and error states
+  if (userLoading) return <LoadingState />;
+  if (userError) return <ErrorState error={(userError as Error)?.message || 'An error occurred'} />;
 
   // Editor view - Apple-style presentation editor
   if (viewMode === 'editor' && currentPresentation) {
     return (
       <div className="min-h-screen bg-white dark:bg-black transition-colors duration-500">
         <MinimalBackground />
-        <AuthHeader user={user} authBypass={authBypass} onBypass={handleAuthBypass} />
+        <AuthHeader user={user} />
         
         {/* Header */}
         <div className="bg-white/80 dark:bg-black/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50 p-3 sm:p-4">
@@ -902,7 +849,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-white dark:bg-black transition-colors duration-500">
       <MinimalBackground />
-      <AuthHeader user={user} authBypass={authBypass} onBypass={handleAuthBypass} />
+      <AuthHeader user={user} />
       
       {/* Main Content */}
       <main className="relative z-10 min-h-screen flex flex-col items-center justify-start px-4 sm:px-6 py-6 sm:py-12 md:py-20">
