@@ -288,7 +288,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👨‍💻 Developer
 
-**Saurabh Pareek** - Full Stack Developer & AI Enthusiast
+**Saurabh Pareek** - AI Enthusiast
 - Passionate about building innovative AI-powered applications
 - Hackathon participant creating the future of presentation tools
 - Always open to collaboration and feedback!
