@@ -1,4 +1,4 @@
-# Snap2Slides - AI-Powered Presentation Generator
+w# Snap2Slides - AI-Powered Presentation Generator
 
 [![CI/CD Pipeline](https://github.com/SaurabhCodesAI/snap2slides-hackathon/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/SaurabhCodesAI/snap2slides-hackathon/actions/workflows/ci-cd.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -690,6 +690,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Auth0** - For secure authentication
 - **Framer Motion** - For beautiful animations
 - **Tailwind CSS** - For utility-first styling
+
+
+## Demo link
+- **Youtube**: https://www.youtube.com/watch?v=G8rV8L0Eo_A
+- 
 
 ## 📞 Support & Contact
 
