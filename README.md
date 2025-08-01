@@ -694,7 +694,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Demo link
 - **Youtube**: https://www.youtube.com/watch?v=G8rV8L0Eo_A
-- 
 
 ## 📞 Support & Contact
 
