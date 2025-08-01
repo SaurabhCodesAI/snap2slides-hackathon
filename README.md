@@ -1,4 +1,4 @@
-w# Snap2Slides - AI-Powered Presentation Generator
+# 📸 Snap2Slides – AI-Powered Presentation Generator
 
 [![CI/CD Pipeline](https://github.com/SaurabhCodesAI/snap2slides-hackathon/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/SaurabhCodesAI/snap2slides-hackathon/actions/workflows/ci-cd.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
