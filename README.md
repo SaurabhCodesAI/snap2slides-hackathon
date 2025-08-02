@@ -9,7 +9,7 @@
 Transform your screenshots, handwritten notes, and images into stunning professional presentations with AI magic. Built with industry best practices using Next.js 14, TypeScript, and Google Gemini Vision API.
 
 ## ✨ Features
-
+ 
 ### 🧠 AI-Powered Analysis
 - **Gemini Vision API** - Advanced image analysis and content extraction
 - **Smart Content Recognition** - Automatically detects titles, bullet points, and structure
@@ -694,6 +694,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Demo link
 - **Youtube**: https://www.youtube.com/watch?v=G8rV8L0Eo_A
+
 
 
 ## 📞 Support & Contact
