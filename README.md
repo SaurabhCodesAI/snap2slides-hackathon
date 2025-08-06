@@ -532,6 +532,62 @@ test: add E2E tests for export functionality
 chore: update dependencies
 ```
 
+## 🚀 YOLO Merge - Safe Development Practice
+
+### What is YOLO Merge?
+
+**YOLO Merge** (You Only Live Once) is a development practice where certain types of low-risk changes are merged directly to the main branch without requiring extensive code review. This approach balances development velocity with code quality for appropriate change types.
+
+### When to Use YOLO Merge
+
+YOLO merges are **appropriate** for:
+
+- ✅ **Documentation updates** - README files, API docs, comments
+- ✅ **Configuration changes** - Environment configs, build settings (non-breaking)
+- ✅ **Dependency updates** - Minor version bumps with no breaking changes
+- ✅ **Typography fixes** - Fixing typos, formatting, grammar
+- ✅ **Asset additions** - Adding images, icons, or other static resources
+- ✅ **Test improvements** - Adding tests without changing implementation
+- ✅ **Logging enhancements** - Adding debug logs or improving error messages
+
+### When NOT to Use YOLO Merge
+
+YOLO merges are **NOT appropriate** for:
+
+- ❌ **Logic changes** - Any modification to business logic or algorithms
+- ❌ **API modifications** - Changes to public interfaces or endpoints
+- ❌ **Database changes** - Schema modifications or data migrations
+- ❌ **Security updates** - Authentication, authorization, or security-related code
+- ❌ **Performance optimizations** - Code that affects application performance
+- ❌ **Breaking changes** - Any change that could break existing functionality
+- ❌ **Complex refactoring** - Large-scale code restructuring
+
+### Best Practices for YOLO Merge
+
+1. **Keep it minimal** - Make the smallest possible change to achieve the goal
+2. **Test locally** - Ensure linting and tests pass before merging
+3. **Clear commit messages** - Use conventional commit format for traceability
+4. **Monitor after merge** - Watch for any unexpected issues post-merge
+5. **Document the change** - Include reasoning in commit message or PR description
+
+### Example YOLO Merge Scenarios
+
+```bash
+# Safe documentation update
+git commit -m "docs: add YOLO merge guidelines to README"
+
+# Safe configuration change
+git commit -m "config: update development port in package.json"
+
+# Safe asset addition
+git commit -m "assets: add new company logo variants"
+
+# Safe test addition
+git commit -m "test: add unit tests for utility functions"
+```
+
+**Remember**: When in doubt, create a pull request for review. YOLO merges should only be used when you're confident the change is safe and adds clear value without risk.
+
 ## 📄 License & Acknowledgments
 
 ### License
