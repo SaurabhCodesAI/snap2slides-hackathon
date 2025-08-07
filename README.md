@@ -10,7 +10,7 @@ Transform your screenshots, handwritten notes, and images into stunning professi
 
 ## ✨ Features
  
-### 🧠 AI-Powered Analysis
+### AI-Powered Analysis
 - **Gemini Vision API** - Advanced image analysis and content extraction
 - **Smart Content Recognition** - Automatically detects titles, bullet points, and structure
 - **Theme Suggestions** - AI recommends themes based on your content
