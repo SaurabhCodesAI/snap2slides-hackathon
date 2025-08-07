@@ -33,7 +33,7 @@ Transform your screenshots, handwritten notes, and images into stunning professi
 - **Error Boundaries** - Graceful error handling with recovery options
 - **Performance Monitoring** - Built-in analytics and Core Web Vitals tracking
 
-### 🚀 Export & Deployment
+### Export & Deployment
 - **Multiple Formats** - PDF, PowerPoint (PPTX), HTML, Interactive web
 - **High Performance** - Optimized builds with code splitting
 - **Docker Support** - Production-ready containerization
